@@ -1,7 +1,7 @@
 const { Router } = require('express');
 // Importar todos los routers;
 // Ejemplo: const authRouter = require('./auth.js');
-const {listDogs, findName} = require('../../src/utils.js');
+const {listDogs, findName, findBreeds} = require('./utils.js');
 
 const router = Router();
 
@@ -17,7 +17,6 @@ const router = Router();
 router.get( '/', async (req, res, next) => {
    
     if(req.query.hasOwnProperty('name')) next(); 
-    
     let {pag} = req.query;
 
     try {
@@ -30,7 +29,6 @@ router.get( '/', async (req, res, next) => {
         res.status(404).json('No hemos encontrado el listado de razas');
         
     }
-
 
 });
 
@@ -53,6 +51,28 @@ router.get( '/', async (req, res) => {
 
 
 });
+
+
+router.get( '/:id', async (req, res) => {
+
+    let {id} = req.params;
+
+    if(!id) return res.status(404).json('Por favor ingresar un id de la raza a consultar');
+
+    try {
+
+        let raza = await findBreeds(id);
+        res.status(200).json(raza);
+        
+    } catch (error) {
+
+        res.status(404).json('No hemos encontrado una raza con el id ingresado');
+        
+    }
+
+
+});
+
 
 
 module.exports = router;
